@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardImage: {fileID: 2800000, guid: da22d70dc512cc24c86519776a801e8e, type: 3}
   cardSuit: 2
-  number: 8
+  cardRank: 5

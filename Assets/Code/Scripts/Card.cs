@@ -11,29 +11,43 @@ public class Card : ScriptableObject
         Golds,
         Swords
     }
+    [System.Serializable]
+    public enum Rank
+    {
+        Two,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Jack,
+        Knight,
+        King,
+        Three,
+        Ace
+    }
     [SerializeField] private Texture2D cardImage;
     [SerializeField] public Suit cardSuit;
-    [SerializeField] public int number;
+    [SerializeField] public Rank cardRank;
 
-    /// <summary>
-    /// Calculates the card's value based on the card number and the rules.
-    /// </summary>
     public int CalculateCardValue()
     {
-        switch (number)
+        switch (cardRank)
         {
-            case 1:
-                return 11;
-            case 3:
-                return 10;
-            case 12:
-                return 4;
-            case 11:
-                return 3;
-            case 10:
+            case Rank.Jack:
                 return 2;
+            case Rank.Knight:
+                return 3;
+            case Rank.King:
+                return 4;
+            case Rank.Three:
+                return 10;
+            case Rank.Ace:
+                return 11;
         }
 
+        //Rest of card ranks don't have value
         return 0;
     }
+    
+    
 }

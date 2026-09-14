@@ -52,7 +52,7 @@ public class TrickManager : MonoBehaviour
                 foreach(Player player in players)
                 {
                     //The card number is bigger
-                    if (winner.playedCard.number < player.playedCard.number)
+                    if (winner.playedCard.cardRank < player.playedCard.cardRank)
                         winner = player;
                 }
                 return winner;
