@@ -3,8 +3,14 @@ using UnityEngine;
 
 public class TrickManager : MonoBehaviour
 {
+    private Player[] players;
     private Card.Suit triumphSuit;
     private Card.Suit trickSuit;
+
+    void Start()
+    {
+        players = GameManager.Instance.players;
+    }
 
     public void SetTriumphSuit(Card.Suit newSuit)
     {
@@ -18,7 +24,6 @@ public class TrickManager : MonoBehaviour
 
     public Player CalculateTrickWinner()
     {
-        Player[] players = GameManager.Instance.players;
         List<Player> trickWinners = new List<Player>();
         //First look the cards that are triumph suit, those are possible winners
         for(int p = 0; p < players.Length; p++)
@@ -31,7 +36,10 @@ public class TrickManager : MonoBehaviour
 
         //If there is only 1, that's the winner
         if(trickWinners.Count == 1)
+        {
+            AddScoredCards(trickWinners[0], players);
             return trickWinners[0];
+        }
         else
         {
             trickWinners.Clear();
@@ -45,7 +53,11 @@ public class TrickManager : MonoBehaviour
             }
             //If there is only 1, that's the winner
             if(trickWinners.Count == 1)
+            {
+                AddScoredCards(trickWinners[0], players);
                 return trickWinners[0];
+            }
+            
             else
             {
                 Player winner = players[0];
@@ -55,8 +67,16 @@ public class TrickManager : MonoBehaviour
                     if (winner.playedCard.cardRank < player.playedCard.cardRank)
                         winner = player;
                 }
+                AddScoredCards(winner, players);
                 return winner;
             }
+        }
+    }
+    private void AddScoredCards(Player trickWinner, Player[] players)
+    {
+        foreach(Player player in players)
+        {
+            trickWinner.scoredCards.Add(player.playedCard);
         }
     }
 

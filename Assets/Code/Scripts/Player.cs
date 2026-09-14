@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int score;
+    public List<Card> scoredCards;
     public Card playedCard;
+    public int playerNumber;
     private Hand hand;
 
     void Awake()
@@ -13,10 +15,16 @@ public class Player : MonoBehaviour
 
     public void PlayRandomCard()
     {
-        int random = Random.Range(1, hand.cards.Count);
-        playedCard = hand.cards[random];
-        print("Card played is: " + playedCard);
-        hand.PlayCard(playedCard);
+        if(hand.cards.Count == 0)
+            Debug.LogError("Hand from player " + this.name + " is empty!");
+        else
+        {
+            int random = Random.Range(0, hand.cards.Count - 1);
+            playedCard = hand.cards[random];
+            print("Card played is: " + playedCard);
+            hand.PlayCard(playedCard);
+    
+        }
     }
 
     public void DrawCard(Card newCard)
@@ -34,8 +42,13 @@ public class Player : MonoBehaviour
         playedCard = null;
     }
 
-    public void SetPlayerScore()
+    public int CalculateScore()
     {
-        
+        int score = 0;
+        foreach(Card card in scoredCards)
+        {
+            score += card.CalculateCardValue();
+        }
+        return score;
     }
 }

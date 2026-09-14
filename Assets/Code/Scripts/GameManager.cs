@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public TrickManager trickManager;
     [SerializeField] private int initialCardsAmount;
     private int currentPlayer;
-    private bool isFirstTrickPlay = true;
+    private bool isNewTrickPlay = true;
 
     private void Awake()
     {
@@ -32,25 +32,30 @@ public class GameManager : MonoBehaviour
     {
         //Reset deck
         deck.CreateDeck();
-        //Clear player hands
-        foreach(Player player in players)
-            player.ClearHand();
+        //Reset players
+        ResetPlayers();
         //Deal cards
         DealCards(initialCardsAmount);
-        //Discover Triumph Suit
-        DiscoverTriumphSuit();
+        //Discover Triumph Suit and set it
+        trickManager.SetTriumphSuit(deck.DiscoverTriumphSuit().cardSuit);
         //Select random player to start
-        currentPlayer = Random.Range(0, players.Length - 1);
-        isFirstTrickPlay = true;
+        currentPlayer = Random.Range(0, players.Length);
+        isNewTrickPlay = true;
         print("Game prepared");
     }
 
     public void PlayTestTrick()
     {
-        print("Player " + currentPlayer + " is playing");
+        print("Player " + players[currentPlayer].playerNumber + " is playing");
         players[currentPlayer].PlayRandomCard();
-        if(isFirstTrickPlay)
-            trickManager.SetTrickSuit(players[currentPlayer].playedCard.cardSuit);
+        if(isNewTrickPlay)
+            if(players[currentPlayer].playedCard != null) //Players have a card to play
+                trickManager.SetTrickSuit(players[currentPlayer].playedCard.cardSuit);
+            else //The game ends
+            {
+                GetWinner();
+                PrepareGame();
+            }
         SelectNextPlayer();
         if(CheckAllPlayersHavePlayed())
         {
@@ -58,12 +63,14 @@ public class GameManager : MonoBehaviour
             print("The player winner is: " + winner);
             RemovePlayerHands();
             DealCards(1);
-            isFirstTrickPlay = true;
+            isNewTrickPlay = true;
         }
     }
 
     private void DealCards(int cardsToDeal)
     {
+        if(deck.IsDeckEmpty()) //We dont try to deal if the dekc is empty
+            return;
         print("Dealing cards...");
         for(int c = 0; c < cardsToDeal; c++)
         {
@@ -74,6 +81,8 @@ public class GameManager : MonoBehaviour
 
     private void DealOneCard()
     {
+        if(deck.IsDeckEmpty()) //We dont try to deal if the dekc is empty
+            return;
         foreach(Player player in players)
         {
             Card card = deck.RemoveCard();
@@ -82,13 +91,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void DiscoverTriumphSuit()
-    {
-        print("Discovering triumph suit...");
-        Card card = deck.RemoveCard();
-        trickManager.SetTriumphSuit(card.cardSuit);
-        print("The triumph suit is: " + card.cardSuit);
-    }
+    
 
     private void SelectNextPlayer()
     {
@@ -115,6 +118,34 @@ public class GameManager : MonoBehaviour
         foreach(Player player in players)
         {
             player.ClearPlayedCard();
+        }
+    }
+
+    private Player GetWinner()
+    {
+        Player winner = players[0];
+        int winnerScore = players[0].CalculateScore();
+        print("Player " + winner.playerNumber + " scored " + winnerScore);
+        for(int p = 1; p < players.Length; p++)
+        {
+            int otherScore = players[p].CalculateScore();
+            if(winnerScore < otherScore)
+            {
+                winnerScore = otherScore;
+                winner = players[p];
+            }
+            print("Player " + players[p].playerNumber + " scored " + otherScore);
+        }
+        return winner;
+    }
+
+    private void ResetPlayers()
+    {
+        for(int p = 0; p < players.Length; p++)
+        {
+            players[p].ClearHand();
+            players[p].playerNumber = p + 1;
+            players[p].scoredCards.Clear();
         }
     }
 }

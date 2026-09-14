@@ -5,22 +5,36 @@ using UnityEngine;
 public class Deck : MonoBehaviour
 {
     [SerializeField] private Card[] initialCards;
+    public Card triumphSuitCard;
     private Queue<Card> deckCards;
-
+    
     public Card RemoveCard()
     {
-        if(deckCards.Count > 0)
+        if(!IsDeckEmpty())
         {
-            print("Left cards in deck:" + deckCards.Count);
             return deckCards.Dequeue();
         }
             
         else
         {
-            Debug.LogError("The deck is empty");
-            return null;
+            if(triumphSuitCard != null)
+            {
+                Debug.LogWarning("No cards left, giving the triumph card");
+                return triumphSuitCard;
+            }
+            else
+            {
+                Debug.LogWarning("No cards left in the deck");
+                return null;
+            }
+            
         }
             
+    }
+
+    public bool IsDeckEmpty()
+    {
+        return deckCards.Count == 0;
     }
 
     /// <summary>
@@ -31,6 +45,15 @@ public class Deck : MonoBehaviour
         print("Creating deck...");
         deckCards = new Queue<Card>();
         InitialShuffle();
+    }
+
+    public Card DiscoverTriumphSuit()
+    {
+        print("Discovering triumph suit...");
+        triumphSuitCard = RemoveCard();
+        
+        print("The triumph suit is: " + triumphSuitCard.cardSuit);
+        return triumphSuitCard;
     }
 
     private void InitialShuffle()
@@ -47,7 +70,7 @@ public class Deck : MonoBehaviour
 
         for(int c = 0; c < initialCards.Length - 1; c++)
         {
-            random = Random.Range(1, cards.Count - 1);
+            random = Random.Range(0, cards.Count);
             Card card = cards[random];
             cards.RemoveAt(random);
             //print(card.number);
@@ -57,4 +80,6 @@ public class Deck : MonoBehaviour
         deckCards.Enqueue(cards[0]);
         //print(deckCards);
     }
+
+    
 }
