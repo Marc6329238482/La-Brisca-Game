@@ -10,9 +10,17 @@ public class Deck : MonoBehaviour
     public Card RemoveCard()
     {
         if(deckCards.Count > 0)
+        {
+            print("Left cards in deck:" + deckCards.Count);
             return deckCards.Dequeue();
+        }
+            
         else
+        {
+            Debug.LogError("The deck is empty");
             return null;
+        }
+            
     }
 
     /// <summary>
@@ -47,6 +55,6 @@ public class Deck : MonoBehaviour
         }
         //Card card = cards[random];
         deckCards.Enqueue(cards[0]);
-        print(deckCards);
+        //print(deckCards);
     }
 }

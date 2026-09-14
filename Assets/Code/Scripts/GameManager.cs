@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Player[] players;
     [SerializeField] public Deck deck;
     [SerializeField] public TrickManager trickManager;
-    [SerializeField] private int cardsToDeal;
+    [SerializeField] private int initialCardsAmount;
     private int currentPlayer;
     private bool isFirstTrickPlay = true;
 
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         foreach(Player player in players)
             player.ClearHand();
         //Deal cards
-        DealCards();
+        DealCards(initialCardsAmount);
         //Discover Triumph Suit
         DiscoverTriumphSuit();
         //Select random player to start
@@ -57,24 +57,28 @@ public class GameManager : MonoBehaviour
             Player winner = trickManager.CalculateTrickWinner();
             print("The player winner is: " + winner);
             RemovePlayerHands();
+            DealCards(1);
             isFirstTrickPlay = true;
         }
     }
 
-    private void DealCards()
+    private void DealCards(int cardsToDeal)
     {
         print("Dealing cards...");
         for(int c = 0; c < cardsToDeal; c++)
         {
-            print("Card number: " + c);
-            foreach(Player player in players)
-            {
-                Card card = deck.RemoveCard();
-                if(card)
-                {
-                    player.DrawCard(card);
-                }
-            }
+            //print("Card number: " + c);
+            DealOneCard();
+        }
+    }
+
+    private void DealOneCard()
+    {
+        foreach(Player player in players)
+        {
+            Card card = deck.RemoveCard();
+            if(card)
+                player.DrawCard(card);
         }
     }
 
