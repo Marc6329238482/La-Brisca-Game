@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
 
     private void SelectNextPlayer()
     {
-        if(currentPlayer >= players.Length)
+        if(currentPlayer >= players.Length - 1)
             currentPlayer = 0;
         else
             currentPlayer++;
