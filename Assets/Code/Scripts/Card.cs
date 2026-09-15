@@ -25,9 +25,11 @@ public class Card : ScriptableObject
         Three,
         Ace
     }
+    public int cardHandNumber;
     [SerializeField] private Sprite cardSprite;
     [SerializeField] private Suit cardSuit;
     [SerializeField] private Rank cardRank;
+    
 
     public int CalculateCardValue()
     {
@@ -64,5 +66,6 @@ public class Card : ScriptableObject
         return cardRank;
     }
     
+
     
 }

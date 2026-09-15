@@ -1,13 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
-    public Card cardData;
-    public Sprite sprite;
+    private Card cardData;
+    [SerializeField] private Image image;
 
-    void Start()
+    public void SetCardData(Card newCardData)
     {
-        sprite = cardData.GetCardSprite();
+        cardData = newCardData;
+        image.sprite = cardData.GetCardSprite();
+        
     }
 
 }

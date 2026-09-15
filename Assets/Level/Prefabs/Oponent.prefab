@@ -128,6 +128,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hand
   cards: []
   maxCardsAmount: 3
+  cardDisplayPrefab: {fileID: 2723487353075509727, guid: 5768f1398e181e04cbb1939d3ba93779, type: 3}
+  displayedCards: {fileID: 4590575956377197882}
 --- !u!1 &2000107350779924896
 GameObject:
   m_ObjectHideFlags: 0
