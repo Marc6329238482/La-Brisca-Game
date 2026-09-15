@@ -28,7 +28,7 @@ public class TrickManager : MonoBehaviour
         //First look the cards that are triumph suit, those are possible winners
         for(int p = 0; p < players.Length; p++)
         {
-            if(players[p].playedCard.cardSuit == triumphSuit)
+            if(players[p].playedCard.GetCardSuit() == triumphSuit)
             {
                 trickWinners.Add(players[p]);
             }
@@ -46,7 +46,7 @@ public class TrickManager : MonoBehaviour
             //if not lets check for the trickSuit
             for(int p = 0; p < players.Length; p++)
             {
-                if(players[p].playedCard.cardSuit == trickSuit)
+                if(players[p].playedCard.GetCardSuit() == trickSuit)
                 {
                     trickWinners.Add(players[p]);
                 }
@@ -64,7 +64,7 @@ public class TrickManager : MonoBehaviour
                 foreach(Player player in players)
                 {
                     //The card rank is bigger
-                    if (winner.playedCard.cardRank < player.playedCard.cardRank)
+                    if (winner.playedCard.GetCardRank() < player.playedCard.GetCardRank())
                         winner = player;
                 }
                 AddScoredCards(winner, players);

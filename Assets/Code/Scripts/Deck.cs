@@ -52,7 +52,7 @@ public class Deck : MonoBehaviour
         print("Discovering triumph suit...");
         triumphSuitCard = RemoveCard();
         
-        print("The triumph suit is: " + triumphSuitCard.cardSuit);
+        print("The triumph suit is: " + triumphSuitCard.GetCardSuit());
         return triumphSuitCard;
     }
 

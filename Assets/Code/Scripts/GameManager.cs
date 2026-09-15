@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         //Deal cards
         DealCards(initialCardsAmount);
         //Discover Triumph Suit and set it
-        trickManager.SetTriumphSuit(deck.DiscoverTriumphSuit().cardSuit);
+        trickManager.SetTriumphSuit(deck.DiscoverTriumphSuit().GetCardSuit());
         //Select random player to start
         currentPlayer = Random.Range(0, players.Length);
         isNewTrickPlay = true;
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         players[currentPlayer].PlayRandomCard();
         if(isNewTrickPlay)
             if(players[currentPlayer].playedCard != null) //Players have a card to play
-                trickManager.SetTrickSuit(players[currentPlayer].playedCard.cardSuit);
+                trickManager.SetTrickSuit(players[currentPlayer].playedCard.GetCardSuit());
             else //The game ends
             {
                 GetWinner();

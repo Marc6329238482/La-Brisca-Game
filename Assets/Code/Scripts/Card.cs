@@ -25,9 +25,9 @@ public class Card : ScriptableObject
         Three,
         Ace
     }
-    [SerializeField] private Texture2D cardImage;
-    [SerializeField] public Suit cardSuit;
-    [SerializeField] public Rank cardRank;
+    [SerializeField] private Sprite cardSprite;
+    [SerializeField] private Suit cardSuit;
+    [SerializeField] private Rank cardRank;
 
     public int CalculateCardValue()
     {
@@ -47,6 +47,21 @@ public class Card : ScriptableObject
 
         //Rest of card ranks don't have value
         return 0;
+    }
+
+    public Sprite GetCardSprite()
+    {
+        return cardSprite;
+    }
+
+    public Suit GetCardSuit()
+    {
+        return cardSuit;
+    }
+
+    public Rank GetCardRank()
+    {
+        return cardRank;
     }
     
     

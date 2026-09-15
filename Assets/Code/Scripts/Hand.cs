@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Hand : MonoBehaviour
 {
     public List<Card> cards;
     public int maxCardsAmount;
+    [SerializeField] private RectTransform cardsDisplay;
 
     void Awake()
     {
@@ -30,6 +33,12 @@ public class Hand : MonoBehaviour
     public void ClearHand()
     {
         cards.Clear();
+    }
+
+    public void AddDisplayCard(Card newDataCard)
+    {
+        CardDisplay newCardDisplay = new CardDisplay();
+        newCardDisplay.cardData = newDataCard;
     }
 
     /// <summary>
