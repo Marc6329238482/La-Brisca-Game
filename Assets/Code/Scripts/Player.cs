@@ -14,23 +14,27 @@ public class Player : MonoBehaviour
         hand = GetComponent<Hand>();
     }
 
-    public void PlayRandomCard()
+    /*public void PlayRandomCard()
     {
         if(hand.cards.Count == 0)
             Debug.LogError("Hand from player " + this.name + " is empty!");
         else
         {
             int random = Random.Range(0, hand.cards.Count - 1);
-            playedCard = hand.cards[random];
-            print("Card played is: " + playedCard);
-            hand.PlayCard(playedCard);
-    
+            PlayCard(hand.displayedCards.GetChild(random));
         }
+    }*/
+
+    public void PlayCard(CardDisplay newPlayedCard)
+    {
+        playedCard = newPlayedCard.GetCardData();
+        hand.PlayCard(playedCard);
+        //print("Card played is: " + playedCard);
     }
 
     public void DrawCard(Card newCard)
     {
-        hand.DrawCard(newCard);
+        hand.DrawCard(newCard, this);
     }
 
     public void ClearHand()

@@ -9,7 +9,6 @@ public class Hand : MonoBehaviour
     public int maxCardsAmount;
     [SerializeField] private GameObject cardDisplayPrefab;
     [SerializeField] private RectTransform displayedCards;
-    private int cardCount = 1;
 
     void Awake()
     {
@@ -18,15 +17,16 @@ public class Hand : MonoBehaviour
 
     public Card PlayCard(Card selectedCard)
     {
+        print("Played card is: " + selectedCard.GetCardRank() + " of " + selectedCard.GetCardSuit());
         if(RemoveCard(selectedCard))
             return selectedCard;
         else
             return null;
     }
 
-    public void DrawCard(Card newCard)
+    public void DrawCard(Card newCard, Player owner)
     {
-        AddCard(newCard);
+        AddCard(newCard, owner);
     }
 
     ///--------------------Adding cards--------------------
@@ -34,23 +34,22 @@ public class Hand : MonoBehaviour
     /// <summary>
     /// Adds a card.
     /// </summary>
-    private bool AddCard(Card newCard)
+    private bool AddCard(Card newCard, Player owner)
     {
         if(cards.Count >= maxCardsAmount)
             return false;
-        newCard.cardHandNumber = cardCount;
-        cardCount++;
+        
         cards.Add(newCard);
-        AddDisplayCard(newCard);
+        AddDisplayCard(newCard, owner);
         return true;
     }
 
-    private void AddDisplayCard(Card newCardData)
+    private void AddDisplayCard(Card newCardData, Player owner)
     {
         GameObject newCard = Instantiate(cardDisplayPrefab);
         newCard.GetComponent<RectTransform>().SetParent(displayedCards);
         CardDisplay newCardDisplay = newCard.GetComponent<CardDisplay>();
-        newCardDisplay.SetCardData(newCardData);
+        newCardDisplay.SetCardData(newCardData, owner);
         
     }
 
@@ -61,21 +60,13 @@ public class Hand : MonoBehaviour
     /// </summary>
     private bool RemoveCard(Card selectedCard)
     {
-        if(cards.Remove(selectedCard))
-        {
-            Destroy(displayedCards.GetChild(cardCount).gameObject);
-            cardCount--;
-            return true;
-        }
-        return false;
-        
+        return cards.Remove(selectedCard);
     }
 
     public void ClearHand()
     {
         cards.Clear();
         RemoveDisplayedCards();
-        cardCount = 1;
     }
 
     private void RemoveDisplayedCards()

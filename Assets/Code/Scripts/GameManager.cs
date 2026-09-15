@@ -11,6 +11,16 @@ public class GameManager : MonoBehaviour
     private int currentPlayer;
     private bool isNewTrickPlay = true;
 
+    void OnEnable()
+    {
+        EventManager.OnCardButtonClicked += PlayClickedCard;
+    }
+
+    void OnDisable()
+    {
+        EventManager.OnCardButtonClicked -= PlayClickedCard;
+    }
+
     private void Awake()
     {
         // 1. Verificar si ya existe una instancia
@@ -46,10 +56,10 @@ public class GameManager : MonoBehaviour
         //Select random player to start
         currentPlayer = Random.Range(0, players.Length);
         isNewTrickPlay = true;
-        print("Game prepared");
+        //print("Game prepared");
     }
 
-    public void PlayTestTrick()
+    /*public void PlayTestTrick()
     {
         print("Player " + players[currentPlayer].playerNumber + " is playing");
         players[currentPlayer].PlayRandomCard();
@@ -70,7 +80,7 @@ public class GameManager : MonoBehaviour
             DealCards(1);
             isNewTrickPlay = true;
         }
-    }
+    }*/
 
     private void DealCards(int cardsToDeal)
     {
@@ -152,5 +162,43 @@ public class GameManager : MonoBehaviour
             players[p].playerNumber = p + 1;
             players[p].scoredCards.Clear();
         }
+    }
+
+    private void PlayClickedCard(CardDisplay cardDisplay)
+    {
+        //print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
+        if(CheckPlayerTurn(cardDisplay.GetPlayerOwner()))
+        {
+            cardDisplay.GetPlayerOwner().PlayCard(cardDisplay);
+            Destroy(cardDisplay.gameObject);
+            if(isNewTrickPlay)
+                if(players[currentPlayer].playedCard != null) //Players have a card to play
+                    trickManager.SetTrickSuit(players[currentPlayer].playedCard.GetCardSuit());
+                else //The game ends
+                {
+                    GetWinner();
+                    PrepareGame();
+                }
+            SelectNextPlayer();
+            if(CheckAllPlayersHavePlayed())
+            {
+                Player winner = trickManager.CalculateTrickWinner();
+                print("The player winner is: " + winner);
+                RemovePlayerHands();
+                DealCards(1);
+                isNewTrickPlay = true;
+            }
+        }
+    }
+
+    private bool CheckPlayerTurn(Player owner)
+    {
+        if(players[currentPlayer] != owner)
+        {
+            Debug.LogWarning("Wait for your turn!");
+            return false;
+        }
+        else
+            return true;
     }
 }
