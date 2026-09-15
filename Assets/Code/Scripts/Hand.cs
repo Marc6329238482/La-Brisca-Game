@@ -29,6 +29,12 @@ public class Hand : MonoBehaviour
         AddCard(newCard, owner);
     }
 
+    public void ClearHand()
+    {
+        cards.Clear();
+        RemoveDisplayedCards();
+    }
+
     ///--------------------Adding cards--------------------
 
     /// <summary>
@@ -60,20 +66,37 @@ public class Hand : MonoBehaviour
     /// </summary>
     private bool RemoveCard(Card selectedCard)
     {
-        return cards.Remove(selectedCard);
-    }
-
-    public void ClearHand()
-    {
-        cards.Clear();
-        RemoveDisplayedCards();
+        if(cards.Remove(selectedCard))
+        {
+            Destroy(FindCardByCardData(selectedCard));
+            return true;
+        }
+        else
+            return false;
     }
 
     private void RemoveDisplayedCards()
     {
         for(int c = 0; c < displayedCards.childCount; c++)
         {
-            Destroy(displayedCards.GetChild(c).gameObject);
+            if(displayedCards.GetChild(c).GetComponent<CardDisplay>().GetCardData() == null)
+                Destroy(displayedCards.GetChild(c).gameObject);
+            else
+                RemoveCard(displayedCards.GetChild(c).GetComponent<CardDisplay>().GetCardData());
+            //Destroy(displayedCards.GetChild(c).gameObject);
         }
+    }
+
+
+    private GameObject FindCardByCardData(Card selectedCard)
+    {
+        for(int c = 0; c < displayedCards.childCount; c++)
+        {
+            if(displayedCards.GetChild(c).GetComponent<CardDisplay>().GetCardData() == selectedCard)
+            {
+                return displayedCards.GetChild(c).gameObject;
+            }
+        }
+        return null;
     }
 }

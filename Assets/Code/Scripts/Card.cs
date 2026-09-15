@@ -28,7 +28,6 @@ public class Card : ScriptableObject
     [SerializeField] private Sprite cardSprite;
     [SerializeField] private Suit cardSuit;
     [SerializeField] private Rank cardRank;
-    
 
     public int CalculateCardValue()
     {
@@ -64,7 +63,5 @@ public class Card : ScriptableObject
     {
         return cardRank;
     }
-    
-
     
 }
