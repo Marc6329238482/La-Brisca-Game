@@ -454,7 +454,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 13836e28db2e6bc4b8b7f296d0e771d0, type: 2}
   - {fileID: 11400000, guid: 467f8acc4fe92834183819145b48ebca, type: 2}
   - {fileID: 11400000, guid: 2b6d27831a93af34ab2d2acd14c12d81, type: 2}
-  triumphSuitCard: {fileID: 0}
+  triumphCardDisplay: {fileID: 2622350785356878356}
 --- !u!1 &7631425572415798487
 GameObject:
   m_ObjectHideFlags: 0

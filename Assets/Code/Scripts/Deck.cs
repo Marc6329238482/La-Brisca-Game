@@ -5,7 +5,8 @@ using UnityEngine;
 public class Deck : MonoBehaviour
 {
     [SerializeField] private Card[] initialCards;
-    public Card triumphSuitCard;
+    [SerializeField] private SpriteRenderer triumphCardDisplay;
+    private Card triumphSuitCard;
     private Queue<Card> deckCards;
     
     public Card RemoveCard()
@@ -20,6 +21,7 @@ public class Deck : MonoBehaviour
             if(triumphSuitCard != null)
             {
                 Debug.LogWarning("No cards left, giving the triumph card");
+                triumphCardDisplay.gameObject.SetActive(false);
                 return triumphSuitCard;
             }
             else
@@ -51,7 +53,8 @@ public class Deck : MonoBehaviour
     {
         print("Discovering triumph suit...");
         triumphSuitCard = RemoveCard();
-        
+        triumphCardDisplay.sprite = triumphSuitCard.GetCardSprite();
+        triumphCardDisplay.gameObject.SetActive(true);
         print("The triumph suit is: " + triumphSuitCard.GetCardSuit());
         return triumphSuitCard;
     }

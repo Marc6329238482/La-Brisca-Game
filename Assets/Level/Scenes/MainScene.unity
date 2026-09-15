@@ -421,6 +421,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25ef20e228273942b7a235b80c2e0c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Deck
+--- !u!212 &451166523 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2622350785356878356, guid: 88f8e0b8ffde3344ab62c6f7f1a88bdd, type: 3}
+  m_PrefabInstance: {fileID: 2025792400}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,7 +733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &741971633
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1432,6 +1437,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6978560598763954643, guid: 88f8e0b8ffde3344ab62c6f7f1a88bdd, type: 3}
+      propertyPath: triumphCardRenderer
+      value: 
+      objectReference: {fileID: 451166523}
     - target: {fileID: 7190889041517923981, guid: 88f8e0b8ffde3344ab62c6f7f1a88bdd, type: 3}
       propertyPath: m_Name
       value: BasicDeck
