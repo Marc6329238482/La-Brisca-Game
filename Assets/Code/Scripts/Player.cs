@@ -9,6 +9,16 @@ public class Player : MonoBehaviour
     public int playerNumber;
     private Hand hand;
 
+    void OnEnable()
+    {
+        EventManager.OnCardButtonClicked += TryPlayCard;
+    }
+
+    void OnDisable()
+    {
+        EventManager.OnCardButtonClicked -= TryPlayCard;
+    }
+
     void Awake()
     {
         hand = GetComponent<Hand>();
@@ -55,6 +65,17 @@ public class Player : MonoBehaviour
             score += card.CalculateCardValue();
         }
         return score;
+    }
+
+    public bool IsHandEmpty()
+    {
+        return hand.cards.Count == 0;
+    }
+
+    private void TryPlayCard(CardDisplay cardDisplay)
+    {
+        if(cardDisplay.GetPlayerOwner() == this)
+            GameManager.Instance.PlayCard(cardDisplay);
     }
 
 }

@@ -14,16 +14,12 @@ public class GameManager : MonoBehaviour
     
     void OnEnable()
     {
-        EventManager.OnCardButtonClicked += PlayClickedCard;
         EventManager.OnTrickEnded += OnTrickEnded;
-        //EventManager.OnGameEnded += OnGameEnded;
     }
 
     void OnDisable()
     {
-        EventManager.OnCardButtonClicked -= PlayClickedCard;
         EventManager.OnTrickEnded -= OnTrickEnded;
-        //EventManager.OnGameEnded -= OnGameEnded;
     }
 
     private void Awake()
@@ -61,14 +57,13 @@ public class GameManager : MonoBehaviour
     {
         if (cardPool.Count > 0)
         {
-            print("habia una carta");
             CardDisplay pooledCard = cardPool.Dequeue();
             pooledCard.gameObject.SetActive(true);
             return pooledCard;
         }
         else
         {
-            print("no habian cartas");
+            //print("no habian cartas");
             // Si no hay cartas reciclables, creamos una nueva
             GameObject newCard = Instantiate(cardDisplayPrefab);
             return newCard.GetComponent<CardDisplay>();
@@ -81,10 +76,17 @@ public class GameManager : MonoBehaviour
         cardPool.Enqueue(cardToReturn); // Save it for future
     }
 
+    public void PlayCard(CardDisplay cardDisplay)
+    {
+        //print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
+        trickManager.CardPlayed(cardDisplay);
+    }
+
     private void OnTrickEnded()
     {
-        if(deck.IsDeckEmpty()) //If the deck is empty that means the game has ended
+        if(deck.IsDeckEmpty() && EmptyHands()) //If the deck is empty that means the game has ended
         {
+            //print("ey");
             GetWinner();
         }
         else
@@ -128,6 +130,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private bool EmptyHands()
+    {
+        foreach(Player player in players)
+        {
+            if(player.IsHandEmpty())
+                return true;
+
+        }
+        return false;
+    }
+
     private void ResetPlayers()
     {
         for(int p = 0; p < players.Length; p++)
@@ -138,11 +151,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void PlayClickedCard(CardDisplay cardDisplay)
-    {
-        print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
-        trickManager.CardPlayed(cardDisplay);
-    }
+    
 
     private Player GetWinner()
     {
