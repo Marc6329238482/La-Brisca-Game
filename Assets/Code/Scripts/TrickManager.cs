@@ -12,12 +12,49 @@ public class TrickManager : MonoBehaviour
     private Player[] players;
     private Card.Suit triumphSuit;
     private Card.Suit trickSuit;
+    private int currentPlayer;
+    private bool isNewTrickPlay = true;
 
+    //-----CORE FUNCTIONS------
     void Start()
     {
         players = GameManager.Instance.players;
+        //Select random player to start
     }
 
+    //-----PUBLIC FUNCTIONS------
+    public void CardPlayed(CardDisplay cardDisplay)
+    {
+        if(CheckPlayerTurn(cardDisplay.GetPlayerOwner())) //If the card owner is the corresponding player
+        {
+            CardToCenter(cardDisplay); //Put the card played on the center of the table
+            cardDisplay.GetPlayerOwner().PlayCard(cardDisplay);
+            if(isNewTrickPlay)
+            {
+                if(players[currentPlayer].playedCard != null) 
+                    SetTrickSuit(players[currentPlayer].playedCard.GetCardSuit()); //In new tricks we set the new trick suit with the first played card
+                else //The game ends
+                {
+                    //GetWinner();
+                }
+            }
+            SelectNextPlayer();
+            if(CheckAllPlayersHavePlayed())
+            {
+                Player winner = CalculateTrickWinner();
+                print("The trick winner is: " + winner);
+                ClearTableVisuals();
+                isNewTrickPlay = true;
+                EventManager.TrickEnded();
+            }
+        }
+    }
+
+    public void ResetTrick()
+    {
+        currentPlayer = Random.Range(0, players.Length);
+        isNewTrickPlay = true;
+    }
     public void SetTriumphSuit(Card.Suit newSuit)
     {
         triumphSuit = newSuit;
@@ -79,15 +116,6 @@ public class TrickManager : MonoBehaviour
         }
     }
 
-    public void CardToCenter(CardDisplay cardDisplay)
-    {
-        RectTransform cardRect = cardDisplay.GetComponent<RectTransform>();
-        cardRect.SetParent(centerTableTransform, true);
-        
-        //StartCoroutine(AnimateCard(cardRect));
-        
-    }
-
     public void ClearTableVisuals()
     {
         // Recorremos todos los hijos del contenedor del centro de la mesa
@@ -100,6 +128,7 @@ public class TrickManager : MonoBehaviour
         }
     }
 
+    //-----PRIVATE FUNCTIONS------
     private void AddScoredCards(Player trickWinner, Player[] players)
     {
         foreach(Player player in players)
@@ -108,21 +137,46 @@ public class TrickManager : MonoBehaviour
         }
     }
 
-    
-    private void RandomTriumphSuit()
+    private bool CheckPlayerTurn(Player owner)
     {
-        SetTriumphSuit((Card.Suit)Random.Range(0, 3));
+        if(players[currentPlayer] != owner)
+        {
+            Debug.LogWarning("Wait for your turn!");
+            return false;
+        }
+        else
+            return true;
     }
 
-    /*private GameObject CreateCardDisplay(Card playedCard)
+    private void SelectNextPlayer()
     {
-        GameObject newCard = Instantiate(cardDisplayPrefab);
-        CardDisplay newCardDisplay = newCard.GetComponent<CardDisplay>();
-        newCardDisplay.SetCardData(playedCard, null);
-        return newCard;
-    }*/
+        if(currentPlayer >= players.Length - 1)
+            currentPlayer = 0;
+        else
+            currentPlayer++;
+    }
+
+    private void CardToCenter(CardDisplay cardDisplay)
+    {
+        RectTransform cardRect = cardDisplay.GetComponent<RectTransform>();
+        cardRect.SetParent(centerTableTransform, true);
+        
+        //StartCoroutine(AnimateCard(cardRect));
+        
+    }
 
     
+
+    private bool CheckAllPlayersHavePlayed()
+    {
+        foreach(Player player in players)
+        {
+            if(player.playedCard == null)
+                return false;
+        }
+        //print("All players have played");
+        return true;
+    }
 
     private IEnumerator AnimateCard(RectTransform selectedCard)
     {

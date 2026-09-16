@@ -12,17 +12,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int initialCardsAmount;
     [SerializeField] private GameObject cardDisplayPrefab;
     private Queue<CardDisplay> cardPool = new Queue<CardDisplay>();
-    private int currentPlayer;
-    private bool isNewTrickPlay = true;
+    
+    
 
     void OnEnable()
     {
         EventManager.OnCardButtonClicked += PlayClickedCard;
+        EventManager.OnTrickEnded += OnTrickEnded;
     }
 
     void OnDisable()
     {
         EventManager.OnCardButtonClicked -= PlayClickedCard;
+        EventManager.OnTrickEnded -= OnTrickEnded;
     }
 
     private void Awake()
@@ -44,23 +46,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        PrepareGame();
+       ResetGame();
     }
 
-    public void PrepareGame()
+    public void ResetGame()
     {
-        //Reset deck
         deck.CreateDeck();
-        //Reset players
         ResetPlayers();
-        //Deal cards
         DealCards(initialCardsAmount);
-        //Discover Triumph Suit and set it
         trickManager.SetTriumphSuit(deck.DiscoverTriumphSuit().GetCardSuit());
-        //Select random player to start
-        currentPlayer = Random.Range(0, players.Length);
-        isNewTrickPlay = true;
-        //print("Game prepared");
+        trickManager.ResetTrick();
     }
 
     public CardDisplay GetCardVisual()
@@ -87,28 +82,11 @@ public class GameManager : MonoBehaviour
         cardPool.Enqueue(cardToReturn); // Save it for future
     }
 
-    /*public void PlayTestTrick()
+    private void OnTrickEnded()
     {
-        print("Player " + players[currentPlayer].playerNumber + " is playing");
-        players[currentPlayer].PlayRandomCard();
-        if(isNewTrickPlay)
-            if(players[currentPlayer].playedCard != null) //Players have a card to play
-                trickManager.SetTrickSuit(players[currentPlayer].playedCard.GetCardSuit());
-            else //The game ends
-            {
-                GetWinner();
-                PrepareGame();
-            }
-        SelectNextPlayer();
-        if(CheckAllPlayersHavePlayed())
-        {
-            Player winner = trickManager.CalculateTrickWinner();
-            print("The player winner is: " + winner);
-            RemovePlayerHands();
-            DealCards(1);
-            isNewTrickPlay = true;
-        }
-    }*/
+        RemovePlayersPlayedCard(); //Remove the played cards from players
+        DealCards(1);
+    }
 
     private void DealCards(int cardsToDeal)
     {
@@ -134,34 +112,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
 
-    private void SelectNextPlayer()
-    {
-        if(currentPlayer >= players.Length - 1)
-            currentPlayer = 0;
-        else
-            currentPlayer++;
-    }
-
-    private bool CheckAllPlayersHavePlayed()
-    {
-        foreach(Player player in players)
-        {
-            if(player.playedCard == null)
-                return false;
-        }
-        //print("All players have played");
-        return true;
-    }
-
-    private void RemovePlayerHands()
+    private void RemovePlayersPlayedCard()
     {
         //print("Removing played cards from players...");
         foreach(Player player in players)
         {
             player.ClearPlayedCard();
         }
+    }
+
+    private void ResetPlayers()
+    {
+        for(int p = 0; p < players.Length; p++)
+        {
+            players[p].ClearHand();
+            players[p].playerNumber = p + 1;
+            players[p].scoredCards.Clear();
+        }
+    }
+
+    private void PlayClickedCard(CardDisplay cardDisplay)
+    {
+        print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
+        trickManager.CardPlayed(cardDisplay);
     }
 
     private Player GetWinner()
@@ -180,62 +154,6 @@ public class GameManager : MonoBehaviour
             //print("Player " + players[p].playerNumber + " scored " + otherScore);
         }
         return winner;
-    }
-
-    private void ResetPlayers()
-    {
-        for(int p = 0; p < players.Length; p++)
-        {
-            players[p].ClearHand();
-            players[p].playerNumber = p + 1;
-            players[p].scoredCards.Clear();
-        }
-    }
-
-    private void PlayClickedCard(CardDisplay cardDisplay)
-    {
-        print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
-        if(CheckPlayerTurn(cardDisplay.GetPlayerOwner()))
-        {
-            AnimationCardToCenter(cardDisplay);
-            cardDisplay.GetPlayerOwner().PlayCard(cardDisplay); //Card owner (a player) plays the card
-            
-
-            if(isNewTrickPlay)
-                if(players[currentPlayer].playedCard != null) //Players have a card to play
-                    trickManager.SetTrickSuit(players[currentPlayer].playedCard.GetCardSuit());
-                else //The game ends
-                {
-                    GetWinner();
-                    PrepareGame();
-                }
-            SelectNextPlayer();
-            if(CheckAllPlayersHavePlayed())
-            {
-                Player winner = trickManager.CalculateTrickWinner();
-                //print("The player winner is: " + winner);
-                RemovePlayerHands();
-                trickManager.ClearTableVisuals();
-                DealCards(1);
-                isNewTrickPlay = true;
-            }
-        }
-    }
-
-    private bool CheckPlayerTurn(Player owner)
-    {
-        if(players[currentPlayer] != owner)
-        {
-            Debug.LogWarning("Wait for your turn!");
-            return false;
-        }
-        else
-            return true;
-    }
-
-    private void AnimationCardToCenter(CardDisplay cardDisplay)
-    {
-        trickManager.CardToCenter(cardDisplay);
     }
 
     
