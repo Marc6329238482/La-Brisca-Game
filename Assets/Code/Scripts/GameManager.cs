@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Deck deck;
     [SerializeField] public TrickManager trickManager;
     [SerializeField] private int initialCardsAmount;
+    [SerializeField] private GameObject cardDisplayPrefab;
+    private Queue<CardDisplay> cardPool = new Queue<CardDisplay>();
     private int currentPlayer;
     private bool isNewTrickPlay = true;
 
@@ -58,6 +61,30 @@ public class GameManager : MonoBehaviour
         currentPlayer = Random.Range(0, players.Length);
         isNewTrickPlay = true;
         //print("Game prepared");
+    }
+
+    public CardDisplay GetCardVisual()
+    {
+        if (cardPool.Count > 0)
+        {
+            print("habia una carta");
+            CardDisplay pooledCard = cardPool.Dequeue();
+            pooledCard.gameObject.SetActive(true);
+            return pooledCard;
+        }
+        else
+        {
+            print("no habian cartas");
+            // Si no hay cartas reciclables, creamos una nueva
+            GameObject newCard = Instantiate(cardDisplayPrefab);
+            return newCard.GetComponent<CardDisplay>();
+        }
+    }
+
+    public void ReturnCardToPool(CardDisplay cardToReturn)
+    {
+        cardToReturn.gameObject.SetActive(false); // Hide the card
+        cardPool.Enqueue(cardToReturn); // Save it for future
     }
 
     /*public void PlayTestTrick()
@@ -188,6 +215,7 @@ public class GameManager : MonoBehaviour
                 Player winner = trickManager.CalculateTrickWinner();
                 //print("The player winner is: " + winner);
                 RemovePlayerHands();
+                trickManager.ClearTableVisuals();
                 DealCards(1);
                 isNewTrickPlay = true;
             }

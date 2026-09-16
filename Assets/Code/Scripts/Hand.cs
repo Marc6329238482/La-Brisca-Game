@@ -52,9 +52,11 @@ public class Hand : MonoBehaviour
 
     private void AddDisplayCard(Card newCardData, Player owner)
     {
-        GameObject newCard = Instantiate(cardDisplayPrefab, displayedCards.transform, false);
+        //GameObject newCard = Instantiate(cardDisplayPrefab, displayedCards.transform, false);
         //newCard.GetComponent<RectTransform>().SetParent(displayedCards.transform, false);
-        CardDisplay newCardDisplay = newCard.GetComponent<CardDisplay>();
+        CardDisplay newCardDisplay = GameManager.Instance.GetCardVisual();
+        newCardDisplay.transform.SetParent(displayedCards, false);
+        newCardDisplay.transform.localScale = Vector3.one;
         newCardDisplay.SetCardData(newCardData, owner);
         
     }

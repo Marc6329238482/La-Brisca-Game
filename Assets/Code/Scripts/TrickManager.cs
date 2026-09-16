@@ -84,8 +84,22 @@ public class TrickManager : MonoBehaviour
         RectTransform cardRect = cardDisplay.GetComponent<RectTransform>();
         cardRect.SetParent(centerTableTransform, true);
         
-        StartCoroutine(AnimateCard(Vector2.zero, cardRect));
+        //StartCoroutine(AnimateCard(cardRect));
+        
     }
+
+    public void ClearTableVisuals()
+    {
+        // Recorremos todos los hijos del contenedor del centro de la mesa
+        // Se hace en un bucle inverso o guardando referencias, porque cambiar de padre ROMPE el bucle foreach
+        CardDisplay[] cardsOnTable = centerTableTransform.GetComponentsInChildren<CardDisplay>();
+        
+        foreach(CardDisplay card in cardsOnTable)
+        {
+            GameManager.Instance.ReturnCardToPool(card);
+        }
+    }
+
     private void AddScoredCards(Player trickWinner, Player[] players)
     {
         foreach(Player player in players)
@@ -110,8 +124,9 @@ public class TrickManager : MonoBehaviour
 
     
 
-    private IEnumerator AnimateCard(Vector2 targetPosition, RectTransform selectedCard)
+    private IEnumerator AnimateCard(RectTransform selectedCard)
     {
+        Vector2 targetPosition = centerTableTransform.position;
         Vector2 startPosition = selectedCard.anchoredPosition;
         float timeElapsed = 0f;
 
@@ -128,6 +143,7 @@ public class TrickManager : MonoBehaviour
         }
 
         selectedCard.anchoredPosition = targetPosition; // Snap to final position
+        //selectedCard.SetParent(centerTableTransform, true);
     }
     
 }
