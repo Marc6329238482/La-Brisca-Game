@@ -167,12 +167,12 @@ public class GameManager : MonoBehaviour
 
     private void PlayClickedCard(CardDisplay cardDisplay)
     {
-        //print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
+        print("Card clicked is: " + cardDisplay.GetCardData().GetCardRank() + " of " + cardDisplay.GetCardData().GetCardSuit());
         if(CheckPlayerTurn(cardDisplay.GetPlayerOwner()))
         {
+            AnimationCardToCenter(cardDisplay);
             cardDisplay.GetPlayerOwner().PlayCard(cardDisplay); //Card owner (a player) plays the card
-
-            //Destroy(cardDisplay.gameObject); //Destroy the gameobject card after being played
+            
 
             if(isNewTrickPlay)
                 if(players[currentPlayer].playedCard != null) //Players have a card to play
@@ -205,28 +205,10 @@ public class GameManager : MonoBehaviour
             return true;
     }
 
-    private void CardToCenter()
+    private void AnimationCardToCenter(CardDisplay cardDisplay)
     {
-
+        trickManager.CardToCenter(cardDisplay);
     }
 
-    /*private IEnumerator AnimateCard(Vector 2 targetPosition)
-    {
-        Vector2 startPosition = windowTransform.anchoredPosition;
-        float timeElapsed = 0f;
-
-        while (timeElapsed < duration)
-        {
-            timeElapsed += Time.deltaTime;
-            float percentage = timeElapsed / duration;
-            
-            // Evaluate the animation curve for smooth acceleration/deceleration
-            float curveValue = easingCurve.Evaluate(percentage);
-            
-            windowTransform.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, curveValue);
-            yield return null; // Wait for the next frame
-        }
-
-        windowTransform.anchoredPosition = targetPosition; // Snap to final position
-    }*/
+    
 }

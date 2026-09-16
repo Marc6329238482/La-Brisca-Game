@@ -52,8 +52,8 @@ public class Hand : MonoBehaviour
 
     private void AddDisplayCard(Card newCardData, Player owner)
     {
-        GameObject newCard = Instantiate(cardDisplayPrefab);
-        newCard.GetComponent<RectTransform>().SetParent(displayedCards);
+        GameObject newCard = Instantiate(cardDisplayPrefab, displayedCards.transform, false);
+        //newCard.GetComponent<RectTransform>().SetParent(displayedCards.transform, false);
         CardDisplay newCardDisplay = newCard.GetComponent<CardDisplay>();
         newCardDisplay.SetCardData(newCardData, owner);
         
@@ -66,13 +66,7 @@ public class Hand : MonoBehaviour
     /// </summary>
     private bool RemoveCard(Card selectedCard)
     {
-        if(cards.Remove(selectedCard))
-        {
-            Destroy(FindCardByCardData(selectedCard));
-            return true;
-        }
-        else
-            return false;
+        return cards.Remove(selectedCard);
     }
 
     private void RemoveDisplayedCards()

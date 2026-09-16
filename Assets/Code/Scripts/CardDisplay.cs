@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Pool;
 
 public class CardDisplay : MonoBehaviour
 {
+    private IObjectPool<CardDisplay> pool;
     private Card cardData;
     [SerializeField] private Image image;
     private Player playerOwner;
@@ -19,7 +21,7 @@ public class CardDisplay : MonoBehaviour
         return cardData;
     }
 
-    public void onButtonClick()
+    public void OnButtonClick()
     {
         EventManager.CardButtonClicked(this);
     }
@@ -28,5 +30,14 @@ public class CardDisplay : MonoBehaviour
     {
         return playerOwner;
     }
+
+    /*public SetPool(IObjectPool<CardDisplay> newPool)
+    {
+        pool = newPool;
+        CancelInvoke();
+        Invoke(nameof(ReturntoPool));
+    }*/
+
+
 
 }

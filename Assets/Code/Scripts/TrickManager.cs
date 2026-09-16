@@ -1,8 +1,14 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class TrickManager : MonoBehaviour
 {
+    //[SerializeField] private GameObject cardDisplayPrefab;
+    [SerializeField] private float cardAnimationDuration;
+    [SerializeField] private AnimationCurve easingCurve;
+    [SerializeField] private RectTransform centerTableTransform; //A basic rect transform in the main canvas indicating the center of the table
     private Player[] players;
     private Card.Suit triumphSuit;
     private Card.Suit trickSuit;
@@ -72,6 +78,14 @@ public class TrickManager : MonoBehaviour
             }
         }
     }
+
+    public void CardToCenter(CardDisplay cardDisplay)
+    {
+        RectTransform cardRect = cardDisplay.GetComponent<RectTransform>();
+        cardRect.SetParent(centerTableTransform, true);
+        
+        StartCoroutine(AnimateCard(Vector2.zero, cardRect));
+    }
     private void AddScoredCards(Player trickWinner, Player[] players)
     {
         foreach(Player player in players)
@@ -84,6 +98,36 @@ public class TrickManager : MonoBehaviour
     private void RandomTriumphSuit()
     {
         SetTriumphSuit((Card.Suit)Random.Range(0, 3));
+    }
+
+    /*private GameObject CreateCardDisplay(Card playedCard)
+    {
+        GameObject newCard = Instantiate(cardDisplayPrefab);
+        CardDisplay newCardDisplay = newCard.GetComponent<CardDisplay>();
+        newCardDisplay.SetCardData(playedCard, null);
+        return newCard;
+    }*/
+
+    
+
+    private IEnumerator AnimateCard(Vector2 targetPosition, RectTransform selectedCard)
+    {
+        Vector2 startPosition = selectedCard.anchoredPosition;
+        float timeElapsed = 0f;
+
+        while (timeElapsed < cardAnimationDuration)
+        {
+            timeElapsed += Time.deltaTime;
+            float percentage = timeElapsed / cardAnimationDuration;
+            
+            // Evaluate the animation curve for smooth acceleration/deceleration
+            float curveValue = easingCurve.Evaluate(percentage);
+            
+            selectedCard.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, curveValue);
+            yield return null; // Wait for the next frame
+        }
+
+        selectedCard.anchoredPosition = targetPosition; // Snap to final position
     }
     
 }
