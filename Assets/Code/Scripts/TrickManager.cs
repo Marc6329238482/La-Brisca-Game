@@ -33,10 +33,6 @@ public class TrickManager : MonoBehaviour
             {
                 if(players[currentPlayer].playedCard != null) 
                     SetTrickSuit(players[currentPlayer].playedCard.GetCardSuit()); //In new tricks we set the new trick suit with the first played card
-                else //The game ends
-                {
-                    //GetWinner();
-                }
             }
             SelectNextPlayer();
             if(CheckAllPlayersHavePlayed())

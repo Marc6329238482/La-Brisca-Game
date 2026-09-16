@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    
     public static GameManager Instance { get; private set; }
     [SerializeField] public Player[] players;
     [SerializeField] public Deck deck;
@@ -13,18 +12,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject cardDisplayPrefab;
     private Queue<CardDisplay> cardPool = new Queue<CardDisplay>();
     
-    
-
     void OnEnable()
     {
         EventManager.OnCardButtonClicked += PlayClickedCard;
         EventManager.OnTrickEnded += OnTrickEnded;
+        //EventManager.OnGameEnded += OnGameEnded;
     }
 
     void OnDisable()
     {
         EventManager.OnCardButtonClicked -= PlayClickedCard;
         EventManager.OnTrickEnded -= OnTrickEnded;
+        //EventManager.OnGameEnded -= OnGameEnded;
     }
 
     private void Awake()
@@ -84,8 +83,15 @@ public class GameManager : MonoBehaviour
 
     private void OnTrickEnded()
     {
-        RemovePlayersPlayedCard(); //Remove the played cards from players
-        DealCards(1);
+        if(deck.IsDeckEmpty()) //If the deck is empty that means the game has ended
+        {
+            GetWinner();
+        }
+        else
+        {
+            RemovePlayersPlayedCard(); //Remove the played cards from players
+            DealCards(1);
+        }
     }
 
     private void DealCards(int cardsToDeal)
@@ -153,6 +159,7 @@ public class GameManager : MonoBehaviour
             }
             //print("Player " + players[p].playerNumber + " scored " + otherScore);
         }
+        print("The winner is: " + winner.name);
         return winner;
     }
 
