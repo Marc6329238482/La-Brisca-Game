@@ -1,10 +1,14 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Hand : MonoBehaviour
 {
     public List<Card> cards;
     public int maxCardsAmount;
+    [SerializeField] private GameObject cardDisplayPrefab;
+    [SerializeField] private RectTransform displayedCards;
 
     void Awake()
     {
@@ -13,36 +17,51 @@ public class Hand : MonoBehaviour
 
     public Card PlayCard(Card selectedCard)
     {
+        print("Played card is: " + selectedCard.GetCardRank() + " of " + selectedCard.GetCardSuit());
         if(RemoveCard(selectedCard))
             return selectedCard;
         else
             return null;
     }
 
-    /// <summary>
-    /// Adds a new card to the hand.
-    /// </summary>
-    public void DrawCard(Card newCard)
+    public void DrawCard(Card newCard, Player owner)
     {
-        AddCard(newCard);
+        AddCard(newCard, owner);
     }
 
     public void ClearHand()
     {
         cards.Clear();
+        RemoveDisplayedCards();
     }
+
+    ///--------------------Adding cards--------------------
 
     /// <summary>
     /// Adds a card.
     /// </summary>
-    private bool AddCard(Card newCard)
+    private bool AddCard(Card newCard, Player owner)
     {
         if(cards.Count >= maxCardsAmount)
             return false;
         
         cards.Add(newCard);
+        AddDisplayCard(newCard, owner);
         return true;
     }
+
+    private void AddDisplayCard(Card newCardData, Player owner)
+    {
+        //GameObject newCard = Instantiate(cardDisplayPrefab, displayedCards.transform, false);
+        //newCard.GetComponent<RectTransform>().SetParent(displayedCards.transform, false);
+        CardDisplay newCardDisplay = GameManager.Instance.GetCardVisual();
+        newCardDisplay.transform.SetParent(displayedCards, false);
+        newCardDisplay.transform.localScale = Vector3.one;
+        newCardDisplay.SetCardData(newCardData, owner);
+        
+    }
+
+    ///--------------------Removing cards----------------
 
     /// <summary>
     /// Tryes to remove a card from the hand and returns true if succesfully removed the card, false if not.
@@ -50,5 +69,30 @@ public class Hand : MonoBehaviour
     private bool RemoveCard(Card selectedCard)
     {
         return cards.Remove(selectedCard);
+    }
+
+    private void RemoveDisplayedCards()
+    {
+        for(int c = 0; c < displayedCards.childCount; c++)
+        {
+            if(displayedCards.GetChild(c).GetComponent<CardDisplay>().GetCardData() == null)
+                Destroy(displayedCards.GetChild(c).gameObject);
+            else
+                RemoveCard(displayedCards.GetChild(c).GetComponent<CardDisplay>().GetCardData());
+            //Destroy(displayedCards.GetChild(c).gameObject);
+        }
+    }
+
+
+    private GameObject FindCardByCardData(Card selectedCard)
+    {
+        for(int c = 0; c < displayedCards.childCount; c++)
+        {
+            if(displayedCards.GetChild(c).GetComponent<CardDisplay>().GetCardData() == selectedCard)
+            {
+                return displayedCards.GetChild(c).gameObject;
+            }
+        }
+        return null;
     }
 }

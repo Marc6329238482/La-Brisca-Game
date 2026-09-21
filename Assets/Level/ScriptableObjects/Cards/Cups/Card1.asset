@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7407e08d038e34a4fb0be9c6dcfe1429, type: 3}
   m_Name: Card1
   m_EditorClassIdentifier: Assembly-CSharp::Card
-  cardImage: {fileID: 2800000, guid: e376ab6e0cdd2fd48b78f61d068d1bc8, type: 3}
-  cardSuit: 0
-  number: 1
+  cardSprite: {fileID: 21300000, guid: e376ab6e0cdd2fd48b78f61d068d1bc8, type: 3}
+  cardSuit: 1
+  cardRank: 9

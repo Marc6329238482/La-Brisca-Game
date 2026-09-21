@@ -1,0 +1,43 @@
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Pool;
+
+public class CardDisplay : MonoBehaviour
+{
+    private IObjectPool<CardDisplay> pool;
+    private Card cardData;
+    [SerializeField] private Image image;
+    private Player playerOwner;
+
+    public void SetCardData(Card newCardData, Player owner)
+    {
+        cardData = newCardData;
+        image.sprite = cardData.GetCardSprite();
+        playerOwner = owner;
+    }
+
+    public Card GetCardData()
+    {
+        return cardData;
+    }
+
+    public void OnButtonClick()
+    {
+        EventManager.CardButtonClicked(this);
+    }
+
+    public Player GetPlayerOwner()
+    {
+        return playerOwner;
+    }
+
+    /*public SetPool(IObjectPool<CardDisplay> newPool)
+    {
+        pool = newPool;
+        CancelInvoke();
+        Invoke(nameof(ReturntoPool));
+    }*/
+
+
+
+}

@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc333bac9d39a344ae573ca8b80e3e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  score: 0
+  scoredCards: []
   playedCard: {fileID: 0}
+  playerNumber: 0
 --- !u!114 &7366165989002325751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,3 +62,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hand
   cards: []
   maxCardsAmount: 3
+  cardDisplayPrefab: {fileID: 2723487353075509727, guid: 5768f1398e181e04cbb1939d3ba93779, type: 3}
+  displayedCards: {fileID: 0}
